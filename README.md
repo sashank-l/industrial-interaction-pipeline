@@ -2,6 +2,35 @@
 
 Production-grade offline video processing pipeline for extracting 10-second clips containing person-machine interactions from long industrial CCTV footage (6–10 hours).
 
+---
+
+## Big Picture Flow
+
+```mermaid
+flowchart TD
+    A["📹 Raw Video File (.mp4)"] --> B["VideoLoader\n(cv2.VideoCapture)"]
+    B --> C["frame: np.ndarray\nshape=(H,W,3) BGR\nframe_idx: int\ntimestamp: float"]
+    C --> D["YOLODetector\n(YOLOv8x @ 1280px)"]
+    D --> E["person_dets: List[Dict]\nmachine_dets: List[Dict]"]
+    E --> F["ByteTracker ×2\n(one per class)"]
+    F --> G["person_dets_tracked: List[Dict]\n+track_id field"]
+    G --> H["ViTPoseEstimator"]
+    C --> H
+    H --> I["poses: List[np.ndarray]\nshape=(N_persons, 17, 3)"]
+    C --> J["MiDaSDepth\n(DPT_Large)"]
+    J --> K["depth_map: np.ndarray\nshape=(H,W) float32"]
+    G --> L["InteractionScorer"]
+    E --> L
+    I --> L
+    K --> L
+    L --> M["interaction_score: float 0–1\ninteraction_details: List[Dict]"]
+    M --> N["ClipMiner"]
+    N --> O["candidate_clips: List[Dict]\n(temporal buffer)"]
+    O --> P["NMS filter"]
+    P --> Q["🎬 clip_XXXX.mp4\n🗒️ clip_XXXX.json\n📊 summary.json"]
+```
+---
+
 ## Features
 
 - **High-Resolution Detection**: YOLOv8 with 1280px inference for small object detection
