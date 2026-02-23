@@ -1,0 +1,98 @@
+# Industrial Interaction Pipeline Configuration
+# Tuned config matching the successful rers2 run
+
+# Video Input/Output
+video:
+  input_path: ""  # Path to input video file
+  output_dir: "output"  # Directory for output clips
+  fps: null  # Use original FPS if null
+
+# GPU Configuration
+device:
+  use_gpu: true
+  gpu_id: 0
+  fallback_to_cpu: true
+
+# Detection Settings (YOLOv8)
+detection:
+  model: "yolov8x.pt"
+  img_size: 1280
+  conf_threshold: 0.25
+  iou_threshold: 0.45
+  person_class: 0
+  machine_classes: [2, 3, 5, 7, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 73, 74, 75, 76, 77, 78, 79]
+  batch_size: 8
+
+# Tracking Settings (ByteTrack)
+tracking:
+  track_thresh: 0.5
+  track_buffer: 30
+  match_thresh: 0.8
+  min_box_area: 100
+  mot20: false
+
+# Pose Estimation Settings (ViTPose)
+pose:
+  model: "vitpose-b"
+  conf_threshold: 0.3
+  batch_size: 16
+  hand_keypoints: [9, 10]
+  arm_keypoints: [5, 6, 7, 8, 9, 10]
+
+# Depth Estimation Settings (MiDaS)
+depth:
+  model: "DPT_Large"
+  optimize: true
+  height: 384
+  square: false
+
+# Interaction Scoring — relaxed thresholds (matched to rers2 successful run)
+interaction:
+  proximity:
+    enabled: true
+    max_distance: 3.0        # relaxed from 2.0
+    weight: 0.3
+
+  pose:
+    enabled: true
+    weight: 0.25
+    reaching_threshold: 0.25  # relaxed from 0.3
+    operating_threshold: 0.4  # relaxed from 0.5
+
+  motion:
+    enabled: true
+    weight: 0.2
+    temporal_window: 15
+    min_movement: 3           # relaxed from 5
+
+  hoi:
+    enabled: false
+    weight: 0.25
+
+  idle_detection:
+    enabled: true
+    standing_threshold: 5.0  # relaxed from 3.0
+    walking_speed_max: 60.0  # relaxed from 50.0
+
+# Clip Mining — relaxed thresholds (matched to rers2 successful run)
+clip_mining:
+  clip_duration: 10.0
+  sliding_window: 5.0
+  interaction_threshold: 0.4  # relaxed from 0.6
+  min_interaction_frames: 40  # relaxed from 60
+  nms_threshold: 0.5          # relaxed from 0.1
+  save_metadata: true
+  save_visualization: true
+
+# Logging
+logging:
+  level: "INFO"
+  save_logs: true
+  log_file: "pipeline.log"
+  progress_bar: true
+
+# Performance
+performance:
+  frame_skip: 1
+  max_frames: null
+  num_workers: 4

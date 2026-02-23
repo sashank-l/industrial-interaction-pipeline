@@ -1,0 +1,104 @@
+# Industrial Interaction Pipeline Configuration
+
+# Video Input/Output
+video:
+  input_path: ""  # Path to input video file
+  output_dir: "output"  # Directory for output clips
+  fps: null  # Use original FPS if null
+
+# GPU Configuration
+device:
+  use_gpu: true  # Auto-detect and use GPU if available
+  gpu_id: 0  # GPU device ID
+  fallback_to_cpu: true  # Fallback to CPU if GPU unavailable
+
+# Detection Settings (YOLOv8)
+detection:
+  model: "yolov8x.pt"  # YOLOv8 model (n/s/m/l/x)
+  img_size: 1280  # High-resolution inference
+  conf_threshold: 0.25  # Confidence threshold
+  iou_threshold: 0.45  # NMS IOU threshold
+  person_class: 0  # COCO person class
+  machine_classes: [2, 3, 5, 7, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 73, 74, 75, 76, 77, 78, 79]  # Vehicles, furniture, electronics, etc.
+  batch_size: 8
+
+# Tracking Settings (ByteTrack)
+tracking:
+  track_thresh: 0.5  # High threshold for first association
+  track_buffer: 30  # Frames to keep lost tracks
+  match_thresh: 0.8  # Matching threshold
+  min_box_area: 100  # Minimum bounding box area
+  mot20: false  # Use MOT20 settings
+
+# Pose Estimation Settings (ViTPose)
+pose:
+  model: "vitpose-b"  # ViTPose model variant (b/l/h)
+  conf_threshold: 0.3  # Keypoint confidence threshold
+  batch_size: 16
+  # Keypoint indices for interaction detection
+  hand_keypoints: [9, 10]  # Left/right wrist
+  arm_keypoints: [5, 6, 7, 8, 9, 10]  # Shoulders, elbows, wrists
+
+# Depth Estimation Settings (MiDaS)
+depth:
+  model: "DPT_Large"  # MiDaS model (DPT_Large/DPT_Hybrid/MiDaS_small)
+  optimize: true  # Optimize for speed
+  height: 384  # Input height
+  square: false  # Keep aspect ratio
+
+# Interaction Scoring
+interaction:
+  # Proximity scoring
+  proximity:
+    enabled: true
+    max_distance: 2.0  # Maximum normalized depth distance
+    weight: 0.3
+  
+  # Pose-based scoring
+  pose:
+    enabled: true
+    weight: 0.25
+    # Activity patterns (hand/arm positions)
+    reaching_threshold: 0.3  # Hand extension ratio
+    operating_threshold: 0.5  # Hand near machine threshold
+  
+  # Motion scoring
+  motion:
+    enabled: true
+    weight: 0.2
+    temporal_window: 15  # Frames to analyze
+    min_movement: 5  # Minimum pixel movement
+  
+  # HOI scoring (if available)
+  hoi:
+    enabled: false  # Disabled by default (requires additional setup)
+    weight: 0.25
+  
+  # Idle detection (exclusion)
+  idle_detection:
+    enabled: true
+    standing_threshold: 3.0  # Pixels movement threshold
+    walking_speed_max: 50.0  # Maximum walking speed (pixels/frame)
+
+# Clip Mining
+clip_mining:
+  clip_duration: 10.0  # Seconds
+  sliding_window: 5.0  # Seconds (overlap)
+  interaction_threshold: 0.6  # Minimum interaction score
+  min_interaction_frames: 60  # Minimum frames with interaction (6 sec at 10fps)
+  nms_threshold: 0.1  # Non-maximum suppression for overlapping clips
+  save_metadata: true  # Save JSON metadata
+  save_visualization: true  # Save annotated clips (including interacting objects, poses and scores)
+
+# Logging
+logging:
+  level: "INFO"  # DEBUG/INFO/WARNING/ERROR
+  save_logs: true
+  log_file: "pipeline.log"
+  progress_bar: true
+
+# Performance
+performance:
+  frame_skip: 1  # Process every Nth frame (1 = all frames)
+  max_frames: null  # Limit processing (null = entire video)
+  num_workers: 4  # Data loading workers

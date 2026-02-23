@@ -1,0 +1,160 @@
+{
+  "video_info": {
+    "path": "RERS 2_RERS-2_main_20251212154926.mp4",
+    "fps": 25.0,
+    "total_frames": 4416,
+    "width": 1920,
+    "height": 1080,
+    "duration": 176.64
+  },
+  "total_clips": 2,
+  "clips": [
+    {
+      "clip_id": "clip_0001",
+      "filename": "clip_0001.mp4",
+      "start_time": 112.52,
+      "end_time": 122.48,
+      "duration": 9.960000000000008,
+      "start_frame": 2813,
+      "end_frame": 3062,
+      "interaction_score": 0.09950813144612541,
+      "high_score_frames": 40,
+      "total_frames": 250
+    },
+    {
+      "clip_id": "clip_0002",
+      "filename": "clip_0002.mp4",
+      "start_time": 115.84,
+      "end_time": 125.8,
+      "duration": 9.959999999999994,
+      "start_frame": 2896,
+      "end_frame": 3145,
+      "interaction_score": 0.09818477151599393,
+      "high_score_frames": 40,
+      "total_frames": 250
+    }
+  ],
+  "config": {
+    "video": {
+      "input_path": "",
+      "output_dir": "output",
+      "fps": null
+    },
+    "device": {
+      "use_gpu": true,
+      "gpu_id": 0,
+      "fallback_to_cpu": true
+    },
+    "detection": {
+      "model": "yolov8x.pt",
+      "img_size": 1280,
+      "conf_threshold": 0.25,
+      "iou_threshold": 0.45,
+      "person_class": 0,
+      "machine_classes": [
+        2,
+        3,
+        5,
+        7,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79
+      ],
+      "batch_size": 8
+    },
+    "tracking": {
+      "track_thresh": 0.5,
+      "track_buffer": 30,
+      "match_thresh": 0.8,
+      "min_box_area": 100,
+      "mot20": false
+    },
+    "pose": {
+      "model": "vitpose-b",
+      "conf_threshold": 0.3,
+      "batch_size": 16,
+      "hand_keypoints": [
+        9,
+        10
+      ],
+      "arm_keypoints": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    "depth": {
+      "model": "DPT_Large",
+      "optimize": true,
+      "height": 384,
+      "square": false
+    },
+    "interaction": {
+      "proximity": {
+        "enabled": true,
+        "max_distance": 3.0,
+        "weight": 0.3
+      },
+      "pose": {
+        "enabled": true,
+        "weight": 0.25,
+        "reaching_threshold": 0.25,
+        "operating_threshold": 0.4
+      },
+      "motion": {
+        "enabled": true,
+        "weight": 0.2,
+        "temporal_window": 15,
+        "min_movement": 3
+      },
+      "hoi": {
+        "enabled": false,
+        "weight": 0.25
+      },
+      "idle_detection": {
+        "enabled": true,
+        "standing_threshold": 5.0,
+        "walking_speed_max": 60.0
+      }
+    },
+    "clip_mining": {
+      "clip_duration": 10.0,
+      "sliding_window": 5.0,
+      "interaction_threshold": 0.4,
+      "min_interaction_frames": 40,
+      "nms_threshold": 0.5,
+      "save_metadata": true,
+      "save_visualization": true
+    },
+    "logging": {
+      "level": "INFO",
+      "save_logs": true,
+      "log_file": "pipeline.log",
+      "progress_bar": true
+    },
+    "performance": {
+      "frame_skip": 1,
+      "max_frames": null,
+      "num_workers": 4
+    }
+  }
+}

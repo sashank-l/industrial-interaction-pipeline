@@ -1,0 +1,37 @@
+# Core dependencies
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.24.0
+opencv-python>=4.8.0
+Pillow>=10.0.0
+
+# YOLOv8 for detection
+ultralytics>=8.0.0
+
+# MMPose for pose estimation
+mmpose>=1.1.0
+mmcv>=2.0.0
+mmdet>=3.0.0
+mmengine>=0.8.0
+
+# MiDaS for depth estimation
+timm>=0.9.0
+
+# Tracking
+filterpy>=1.4.5
+scikit-learn>=1.3.0
+lap>=0.4.0
+
+# Configuration and utilities
+pyyaml>=6.0
+tqdm>=4.65.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Video processing
+imageio>=2.31.0
+imageio-ffmpeg>=0.4.9
+
+# Optional: CLIP for HOI
+ftfy>=6.1.0
+regex>=2023.0.0
